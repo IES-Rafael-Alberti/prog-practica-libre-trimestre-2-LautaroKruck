@@ -21,7 +21,6 @@ class Partida(private val equipo1: Equipo, private val equipo2: Equipo) {
         var rondasJugadas = 0
         while (true) {
             empezarRonda() // Presupone que el usuario presiona Enter para continuar
-            simularRonda()
             rondasJugadas++
 
             // Condición de victoria o empate
@@ -37,8 +36,14 @@ class Partida(private val equipo1: Equipo, private val equipo2: Equipo) {
     fun empezarRonda() {
         println("\nPresiona Enter para comenzar la siguiente ronda...")
         readLine() // Espera que el usuario presione Enter
-        // Lógica para simular la ronda
+
+        // Reiniciar habilidades de curación de todos los Curanderos en ambos equipos
+        equipo1.miembros.filterIsInstance<Curandero>().forEach { it.reiniciarHabilidadCurar() }
+        equipo2.miembros.filterIsInstance<Curandero>().forEach { it.reiniciarHabilidadCurar() }
+
+        simularRonda()
     }
+
     fun simularRonda() {
         // Simula el resultado de la ronda (esto es solo un ejemplo y debe ser ajustado según tu lógica de juego)
         val ganadorRonda = if (Random.nextBoolean()) equipo1 else equipo2
@@ -50,9 +55,22 @@ class Partida(private val equipo1: Equipo, private val equipo2: Equipo) {
         ganadorRonda.actualizarHistorial(1, Random.nextInt(1, 5)) // Ejemplo: 1 ronda ganada, entre 1 y 4 eliminaciones
     }
 
+    fun obtenerEquipoGanador(): String {
+        return when {
+            equipo1.rondasGanadas >= 10 && equipo1.rondasGanadas - equipo2.rondasGanadas >= 2 ->
+                "El ganador de la partida es ${equipo1.nombre} con ${equipo1.rondasGanadas} rondas ganadas."
+            equipo2.rondasGanadas >= 10 && equipo2.rondasGanadas - equipo1.rondasGanadas >= 2 ->
+                "El ganador de la partida es ${equipo2.nombre} con ${equipo2.rondasGanadas} rondas ganadas."
+            equipo1.rondasGanadas == equipo2.rondasGanadas ->
+                "La partida terminó en empate con ambos equipos ganando ${equipo1.rondasGanadas} rondas."
+            else -> "La partida aún no ha determinado un ganador."
+        }
+    }
+
     fun mostrarResultadosFinales() {
         println("\nLa partida ha finalizado.")
-        // Aquí deberías añadir la lógica para mostrar los resultados de cada equipo
+        println(obtenerEquipoGanador())
+        mostrarTablaClasificacion()
     }
 
     fun mostrarTablaClasificacion() {

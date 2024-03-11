@@ -12,7 +12,7 @@ open class Agente(val nombre: String, var arma: Arma) {
         const val MAX_BALAS = 5
     }
 
-    fun actualizarEliminaciones() {
+    open fun actualizarEliminaciones() {
         eliminaciones++
     }
 
@@ -38,6 +38,8 @@ open class Agente(val nombre: String, var arma: Arma) {
         val balasDisparadas = disparar() // Utiliza la función disparar existente para obtener el número de balas
         val dañoTotal = balasDisparadas * arma.danio
         agenteObjetivo.recibirDanio(dañoTotal)
+
+        eventosDeLaRonda.add(EventoDelJuego.Eliminacion(this.nombre, agenteObjetivo.nombre))
     }
 
     fun recibirDanio(cantidad: Int) {
