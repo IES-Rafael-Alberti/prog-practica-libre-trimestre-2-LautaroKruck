@@ -1,4 +1,5 @@
 package org.practicatrim2
+import kotlin.random.Random
 
 class Partida(private val equipo1: Equipo, private val equipo2: Equipo) {
 
@@ -16,12 +17,37 @@ class Partida(private val equipo1: Equipo, private val equipo2: Equipo) {
         equipo2.miembros.forEach { agente ->
             println("Agente: ${agente.nombre}, Arma: ${agente.arma}")
         }
+        // Configuración inicial y presentación de equipos como ya tienes
+        var rondasJugadas = 0
+        while (true) {
+            empezarRonda() // Presupone que el usuario presiona Enter para continuar
+            simularRonda()
+            rondasJugadas++
+
+            // Condición de victoria o empate
+            if (equipo1.rondasGanadas >= 10 || equipo2.rondasGanadas >= 10) {
+                if (Math.abs(equipo1.rondasGanadas - equipo2.rondasGanadas) >= 2 || rondasJugadas >= 20) {
+                    break // Salir del bucle, finalizar la partida
+                }
+            }
+        }
+        mostrarResultadosFinales() // Muestra los resultados finales
     }
 
     fun empezarRonda() {
         println("\nPresiona Enter para comenzar la siguiente ronda...")
         readLine() // Espera que el usuario presione Enter
         // Lógica para simular la ronda
+    }
+    fun simularRonda() {
+        // Simula el resultado de la ronda (esto es solo un ejemplo y debe ser ajustado según tu lógica de juego)
+        val ganadorRonda = if (Random.nextBoolean()) equipo1 else equipo2
+        ganadorRonda.rondasGanadas++
+
+        println("El ganador de la ronda es ${ganadorRonda.nombre}. Rondas ganadas: ${ganadorRonda.rondasGanadas}")
+
+        // Actualizar historial del equipo con datos ficticios por ahora
+        ganadorRonda.actualizarHistorial(1, Random.nextInt(1, 5)) // Ejemplo: 1 ronda ganada, entre 1 y 4 eliminaciones
     }
 
     fun mostrarResultadosFinales() {

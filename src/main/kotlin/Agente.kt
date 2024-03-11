@@ -1,31 +1,57 @@
 package org.practicatrim2
+import kotlin.random.Random
 
-class Agente(val nombre: String, var arma: TipoArma) {
+open class Agente(val nombre: String, var arma: Arma) {
     var vida: Int = 100
-        set(value) {
-            field = value
-            if (value <= 0) {
-                estado = EstadoAgente.MUERTO
-                muertes++  // Incrementa el contador de muertes cada vez que la vida llega a 0 o menos.
-            }
-        }
-
     var estado: EstadoAgente = EstadoAgente.VIVO
-        private set
+    var eliminaciones: Int = 0
+    var muertes: Int = 0
 
-    var muertes: Int = 0        // Añadido para contar las veces que el agente ha muerto.
-    var eliminaciones: Int = 0  // Añadido para contar las eliminaciones realizadas por el agente.
+    companion object {
+        const val MIN_BALAS = 0
+        const val MAX_BALAS = 5
+    }
 
-    fun disparar(agenteObjetivo: Agente): Int {
-        if (estado == EstadoAgente.VIVO) {
-            println("$nombre dispara a ${agenteObjetivo.nombre} con $arma causando ${arma.daño} de daño.")
-            // Aquí deberías incluir la lógica para determinar si el disparo resulta en una eliminación.
-            // Por simplicidad, asumiremos que cada disparo resulta en una eliminación.
-            eliminaciones++
-            return arma.daño
-        } else {
+    fun actualizarEliminaciones() {
+        eliminaciones++
+    }
+
+    fun actualizarMuertes() {
+        muertes++
+    }
+
+    open fun disparar(): Int {
+        if (estado == EstadoAgente.MUERTO) {
             println("$nombre está muerto y no puede disparar.")
             return 0
         }
+        val balas = Random.nextInt(MIN_BALAS, MAX_BALAS + 1) // Incluye el máximo en el rango
+        println("$nombre dispara $balas balas.")
+        return balas
+    }
+    fun dispararA(agenteObjetivo: Agente) {
+        if (estado == EstadoAgente.MUERTO) {
+            println("$nombre está muerto y no puede disparar.")
+            return
+        }
+
+        val balasDisparadas = disparar() // Utiliza la función disparar existente para obtener el número de balas
+        val dañoTotal = balasDisparadas * arma.danio
+        agenteObjetivo.recibirDanio(dañoTotal)
+    }
+
+    fun recibirDanio(cantidad: Int) {
+        vida -= cantidad
+        if (vida <= 0) {
+            vida = 0
+            estado = EstadoAgente.MUERTO
+            println("$nombre ha muerto.")
+        } else {
+            println("$nombre ha recibido $cantidad puntos de daño. Vida restante: $vida.")
+        }
+    }
+
+    override fun toString(): String {
+        return "Nombre: $nombre, Vida: $vida, Eliminaciones: $eliminaciones, Muertes: $muertes, Arma: $arma, Estado: $estado"
     }
 }
