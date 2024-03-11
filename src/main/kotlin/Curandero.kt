@@ -34,7 +34,7 @@ class Curandero(nombre: String, arma: Arma) : Agente(nombre, arma) {
             println("No se puede curar a ${agenteObjetivo.nombre} porque está muerto.")
         }
 
-        eventosDeLaRonda.add(EventoDelJuego.Curacion(this.nombre, agenteObjetivo.nombre))
+        eventosDeLaRonda.add(HistorialRonda.Curacion(this.nombre, agenteObjetivo.nombre))
     }
 
     fun revivir(agenteObjetivo: Agente) {
@@ -55,7 +55,7 @@ class Curandero(nombre: String, arma: Arma) : Agente(nombre, arma) {
             println("No se puede revivir a ${agenteObjetivo.nombre} porque ya está vivo.")
         }
 
-        eventosDeLaRonda.add(EventoDelJuego.Curacion(this.nombre, agenteObjetivo.nombre))
+        eventosDeLaRonda.add(HistorialRonda.Curacion(this.nombre, agenteObjetivo.nombre))
     }
 
     fun reiniciarHabilidadCurar() {

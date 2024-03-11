@@ -29,17 +29,18 @@ open class Agente(val nombre: String, var arma: Arma) {
         println("$nombre dispara $balas balas.")
         return balas
     }
-    fun dispararA(agenteObjetivo: Agente) {
+
+    fun dispararAAgente(agenteObjetivo: Agente) {
         if (estado == EstadoAgente.MUERTO) {
             println("$nombre está muerto y no puede disparar.")
             return
         }
 
-        val balasDisparadas = disparar() // Utiliza la función disparar existente para obtener el número de balas
-        val dañoTotal = balasDisparadas * arma.danio
-        agenteObjetivo.recibirDanio(dañoTotal)
+        val balasDisparadas = disparar()
+        val danioTotal = balasDisparadas * arma.danio
+        agenteObjetivo.recibirDanio(danioTotal)
 
-        eventosDeLaRonda.add(EventoDelJuego.Eliminacion(this.nombre, agenteObjetivo.nombre))
+        eventosDeLaRonda.add(HistorialRonda.Eliminacion(this.nombre, agenteObjetivo.nombre))
     }
 
     fun recibirDanio(cantidad: Int) {
@@ -48,6 +49,7 @@ open class Agente(val nombre: String, var arma: Arma) {
             vida = 0
             estado = EstadoAgente.MUERTO
             println("$nombre ha muerto.")
+            actualizarMuertes()
         } else {
             println("$nombre ha recibido $cantidad puntos de daño. Vida restante: $vida.")
         }

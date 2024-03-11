@@ -14,9 +14,9 @@ class AgenteAsalto(nombre: String, arma: Arma) : Agente(nombre, arma) {
             println("$nombre está muerto y no puede disparar.")
             return 0
         }
-        val balas = Random.nextInt(MIN_BALAS, MAX_BALAS + 1) // +1 porque el límite superior es exclusivo
-        val dañoTotal = (balas * arma.danio * INCREMENTO_DANO).toInt()
-        println("$nombre (Agente de Asalto) dispara $balas balas con un daño total de $dañoTotal.")
-        return dañoTotal
+        val balas = Random.nextInt(MIN_BALAS, MAX_BALAS + 1)
+        val danioTotal = (balas * arma.danio * INCREMENTO_DANO).toInt()
+        println("$nombre (Agente de Asalto) dispara $balas balas con un daño total de $danioTotal.")
+        return danioTotal
     }
 }

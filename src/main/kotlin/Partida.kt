@@ -1,7 +1,8 @@
 package org.practicatrim2
+import kotlin.math.abs
 import kotlin.random.Random
 
-class Partida(private val equipo1: Equipo, private val equipo2: Equipo) {
+class Partida(private val equipo1: Equipo, private val equipo2: Equipo, var rondasAGanar: Int, var rondasJugadas: Int = 0, ) {
 
     fun iniciarPartida() {
         println("Bienvenido a la simulación de la partida.")
@@ -17,27 +18,28 @@ class Partida(private val equipo1: Equipo, private val equipo2: Equipo) {
         equipo2.miembros.forEach { agente ->
             println("Agente: ${agente.nombre}, Arma: ${agente.arma}")
         }
-        // Configuración inicial y presentación de equipos como ya tienes
-        var rondasJugadas = 0
+
         while (true) {
-            empezarRonda() // Presupone que el usuario presiona Enter para continuar
+            empezarRonda()
             rondasJugadas++
 
-            // Condición de victoria o empate
-            if (equipo1.rondasGanadas >= 10 || equipo2.rondasGanadas >= 10) {
-                if (Math.abs(equipo1.rondasGanadas - equipo2.rondasGanadas) >= 2 || rondasJugadas >= 20) {
-                    break // Salir del bucle, finalizar la partida
-                }
-            }
+            combrobarDesempate()
         }
-        mostrarResultadosFinales() // Muestra los resultados finales
+        mostrarResultadosFinales()
+    }
+
+    private fun combrobarDesempate(): Boolean{
+        return if (equipo1.rondasGanadas >= rondasAGanar-1 || equipo2.rondasGanadas >= rondasAGanar-1) {
+            if (abs(equipo1.rondasGanadas - equipo2.rondasGanadas) >= 2 || rondasJugadas >= 20) {
+                false
+            } else true
+        } else true
     }
 
     fun empezarRonda() {
         println("\nPresiona Enter para comenzar la siguiente ronda...")
-        readLine() // Espera que el usuario presione Enter
+        readln()
 
-        // Reiniciar habilidades de curación de todos los Curanderos en ambos equipos
         equipo1.miembros.filterIsInstance<Curandero>().forEach { it.reiniciarHabilidadCurar() }
         equipo2.miembros.filterIsInstance<Curandero>().forEach { it.reiniciarHabilidadCurar() }
 
@@ -45,31 +47,23 @@ class Partida(private val equipo1: Equipo, private val equipo2: Equipo) {
     }
 
     fun simularRonda() {
-        // Simula el resultado de la ronda (esto es solo un ejemplo y debe ser ajustado según tu lógica de juego)
-        val ganadorRonda = if (Random.nextBoolean()) equipo1 else equipo2
-        ganadorRonda.rondasGanadas++
+
+
 
         println("El ganador de la ronda es ${ganadorRonda.nombre}. Rondas ganadas: ${ganadorRonda.rondasGanadas}")
 
-        // Actualizar historial del equipo con datos ficticios por ahora
-        ganadorRonda.actualizarHistorial(1, Random.nextInt(1, 5)) // Ejemplo: 1 ronda ganada, entre 1 y 4 eliminaciones
+
     }
 
-    fun obtenerEquipoGanador(): String {
-        return when {
-            equipo1.rondasGanadas >= 10 && equipo1.rondasGanadas - equipo2.rondasGanadas >= 2 ->
-                "El ganador de la partida es ${equipo1.nombre} con ${equipo1.rondasGanadas} rondas ganadas."
-            equipo2.rondasGanadas >= 10 && equipo2.rondasGanadas - equipo1.rondasGanadas >= 2 ->
-                "El ganador de la partida es ${equipo2.nombre} con ${equipo2.rondasGanadas} rondas ganadas."
-            equipo1.rondasGanadas == equipo2.rondasGanadas ->
-                "La partida terminó en empate con ambos equipos ganando ${equipo1.rondasGanadas} rondas."
-            else -> "La partida aún no ha determinado un ganador."
-        }
+    fun obtenerEquipoGanador() {
+
     }
 
     fun mostrarResultadosFinales() {
         println("\nLa partida ha finalizado.")
+
         println(obtenerEquipoGanador())
+
         mostrarTablaClasificacion()
     }
 
